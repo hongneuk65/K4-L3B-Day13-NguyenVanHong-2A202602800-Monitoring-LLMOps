@@ -1,0 +1,3 @@
+baseline version 1 labels ['baseline', 'production']
+candidate version 2 labels ['candidate', 'latest']
+production version 1 labels ['baseline', 'production']

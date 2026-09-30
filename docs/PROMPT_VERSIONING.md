@@ -46,6 +46,27 @@ Tên menu/nút trên Langfuse có thể thay đổi nhẹ theo phiên bản, nh�
 
 Không chấm prompt nào “hay hơn”. Điểm nằm ở khả năng truy xuất version, đổi label và rollback có bằng chứng.
 
+## Cách chạy workload và kiểm tra an toàn bằng script
+
+Sau mỗi lần đổi `LANGFUSE_PROMPT_LABEL`, restart API để bỏ cache prompt khoảng 60 giây. Từ root repository:
+
+```powershell
+python scripts/load_test.py --concurrency 5
+python scripts/verify_langfuse.py --hours 2 --limit 1000
+```
+
+`verify_langfuse.py` chỉ in trace/observation ID, cây cha-con, metadata prompt/correlation ID và model/usage/cost; script không in raw input/output, API key hoặc secret. Dùng output này để đối chiếu nhanh trước khi mở UI và chụp ảnh `06`–`10`.
+
+### Checklist chụp ảnh evidence
+
+1. **Trace list (`06-trace-list.png`):** mở project cá nhân `day13-k4-l3b-<MSSV>` → Traces, chọn khoảng thời gian vừa chạy; chụp ít nhất 10 trace và tên project.
+2. **Waterfall (`07-trace-waterfall.png`):** mở một trace có correlation ID trong log, bấm `lab-agent-run`; cây phải có `retrieval` và `generation`. Không mở phần Input/Output raw.
+3. **Metadata (`08-trace-metadata.png`):** tại root `lab-agent-run`, mở Metadata; chỉ chụp `correlation_id`, `prompt_name`, `prompt_label`, `prompt_version`, `prompt_source`, model; che mọi key/PII nếu xuất hiện.
+4. **Prompt versions (`09-prompt-versions.png`):** mở Prompt Management → `day13-chat`, chụp v1/v2 và labels `baseline`, `candidate`, `production`.
+5. **Promote/rollback (`10-prompt-rollback.png`):** chụp hai trạng thái label `production`: sau promote trỏ v2 và sau rollback trỏ v1. Evidence phải thuộc project cá nhân, không chụp trang API Keys.
+
+Nếu `prompt_source=local-fallback`, không chụp như evidence managed prompt; kiểm tra project/region/key/name/label, restart API và chạy lại.
+
 ## Evidence
 
 - Một ảnh danh sách hai prompt version.

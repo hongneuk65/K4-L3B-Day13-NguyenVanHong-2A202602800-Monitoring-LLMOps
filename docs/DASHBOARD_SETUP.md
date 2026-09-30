@@ -23,7 +23,7 @@ Giữ time range mặc định 60 phút, refresh 30 giây và hiển thị thres
 
 1. Hoàn thiện logging/PII và chạy API.
 2. Chạy `python scripts/load_test.py --concurrency 5` để tạo baseline.
-3. Dùng `data/logs.jsonl` làm nguồn chuẩn để tạo đúng sáu panel bằng Streamlit, notebook, Grafana hoặc công cụ tương đương. Langfuse vẫn là nơi mở trace/prompt version để điều tra sâu.
+3. Dùng `data/logs.jsonl` làm nguồn chuẩn để tạo đúng sáu panel bằng `python scripts/dashboard.py` (dashboard HTML/SVG không thêm dependency vào API). Langfuse vẫn là nơi mở trace/prompt version để điều tra sâu.
 4. Đặt tên panel, đơn vị và threshold giống contract.
 5. Chạy validator:
 
@@ -32,6 +32,28 @@ python scripts/validate_dashboard.py
 ```
 
 Validator kiểm tra cấu trúc contract; nó không thể chứng minh biểu đồ trong ảnh dùng đúng dữ liệu. Evidence runtime vẫn bắt buộc.
+
+## Chạy dashboard local và chụp ảnh
+
+Mở PowerShell thứ hai ở root repository, trong khi API vẫn chạy ở PowerShell thứ nhất:
+
+```powershell
+python scripts/dashboard.py --host 127.0.0.1 --port 8501
+```
+
+Mở `http://127.0.0.1:8501/` trên trình duyệt. Server đọc lại `data/logs.jsonl` cho mỗi lần tải; trang tự refresh sau 30 giây. Ảnh phải nhìn thấy tiêu đề dashboard, dòng `last 60 minutes`, thời điểm UTC, đơn vị, threshold và cả sáu panel. Trên Windows dùng `Win+Shift+S` hoặc Snipping Tool, lưu vào `submission/evidence/11-dashboard-overview.png`; không chụp terminal có secret hoặc `.env`.
+
+Nếu cần dữ liệu mới trước khi chụp, giữ log sạch rồi chạy:
+
+```powershell
+python scripts/load_test.py --concurrency 5
+```
+
+Sau đó tải lại dashboard. Panel Errors tính retrieval success trên mọi record có boolean `tool_success`, gồm cả `response_sent` và `request_failed`.
+
+### Checklist ảnh dashboard
+
+Ảnh `submission/evidence/11-dashboard-overview.png` cần nhìn thấy một màn hình có đủ sáu panel `Latency`, `Traffic`, `Errors`, `Cost`, `Tokens`, `Quality`, cùng `last 60 minutes`, đơn vị và đường threshold màu đỏ. Không chụp `.env` hoặc terminal có credential.
 
 ## Cách kiểm tra runtime
 
