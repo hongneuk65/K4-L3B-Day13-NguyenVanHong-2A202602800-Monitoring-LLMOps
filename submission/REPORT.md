@@ -8,7 +8,7 @@
 - **MSSV:** 2A202602800
 - **Lớp:** K4-L3B
 - **Repository URL:** https://github.com/hongneuk65/K4-L3B-Day13-NguyenVanHong-2A202602800-Monitoring-LLMOps
-- **Commit SHA cuối:** `61a34f827748393ced851ea7c9b412dd53dced23` (HEAD đã dùng để kiểm tra CP4; cập nhật theo commit nộp cuối nếu tạo commit mới).
+- **Commit SHA CP4 cơ sở (source và evidence):** `d4d31d0`; commit cuối chứa bản cập nhật metadata của báo cáo được tạo ngay sau đó.
 - **Challenge ID:** `day13-k4-l3b-monitoring-llmops-v1`
 - **Tên project Langfuse cá nhân:** `day13-k4-l3b-2A202602800`
 
